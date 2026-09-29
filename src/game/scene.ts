@@ -24,7 +24,7 @@ interface Floater { x: number; y: number; text: string; life: number; kind: numb
 interface Ring { x: number; y: number; life: number; kind: number; n: number }
 
 const GRAVITY = 60; // cells per second²
-const HOVER_PREVIEW_DELAY = 3; // seconds the mouse must rest on a cell before the highlight/points preview shows
+const HOVER_PREVIEW_DELAY = 1.25; // seconds the mouse must rest on a cell before the highlight/points preview shows
 const reduceMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 const FONT_DISPLAY = 'Bungee, "Arial Black", sans-serif';
 const FONT_UI = 'Sora, system-ui, -apple-system, sans-serif';
