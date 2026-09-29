@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en" data-mode="puzzle">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no" />
+    <title>Insane Game</title>
+    <meta name="description" content="SameGame for the TI-83, rebuilt: clear matching groups, chase big combos, and play the Daily Puzzle. Installable and works offline." />
+    <meta name="theme-color" content="#0d1020" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Insane Game" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png" />
+    <style>
+      /* Paint the brand background before CSS loads, so launch never flashes white. */
+      html, body { background: #0d1020; margin: 0; }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <noscript><p style="color:#eef0fb;font-family:system-ui;padding:24px">Insane Game needs JavaScript to run.</p></noscript>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
