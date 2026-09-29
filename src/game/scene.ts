@@ -24,6 +24,7 @@ interface Floater { x: number; y: number; text: string; life: number; kind: numb
 interface Ring { x: number; y: number; life: number; kind: number; n: number }
 
 const GRAVITY = 60; // cells per second²
+const HOVER_PREVIEW_DELAY = 3; // seconds the mouse must rest on a cell before the highlight/points preview shows
 const reduceMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 const FONT_DISPLAY = 'Bungee, "Arial Black", sans-serif';
 const FONT_UI = 'Sora, system-ui, -apple-system, sans-serif';
@@ -73,6 +74,7 @@ export class GameScene {
 
   private inputMode: InputMode = 'mouse';
   private hoverFocus: Cell | null = null;
+  private hoverSince = 0;
   private touchFocus: Cell | null = null;
   private armed: Cell | null = null;
   private cursor: Cell = { col: 0, row: 0 };
@@ -212,6 +214,13 @@ export class GameScene {
 
   // MARK: - Input
 
+  /** Restarts the hover-preview delay whenever the pointer moves to a different cell. */
+  private setHover(cell: Cell | null): void {
+    const same = cell && this.hoverFocus && cell.col === this.hoverFocus.col && cell.row === this.hoverFocus.row;
+    if (!same) this.hoverSince = this.clock;
+    this.hoverFocus = cell;
+  }
+
   private setInputMode(mode: InputMode): void {
     if (mode === this.inputMode) return;
     this.inputMode = mode;
@@ -227,7 +236,7 @@ export class GameScene {
       const cell = this.cellAt(e.clientX, e.clientY);
       if (e.pointerType === 'mouse') {
         this.setInputMode('mouse');
-        this.hoverFocus = cell;
+        this.setHover(cell);
       } else {
         this.setInputMode('touch');
         this.touchFocus = cell;
@@ -239,7 +248,7 @@ export class GameScene {
       const cell = this.cellAt(e.clientX, e.clientY);
       if (e.pointerType === 'mouse') {
         this.setInputMode('mouse');
-        this.hoverFocus = cell;
+        this.setHover(cell);
       } else if (this.touchFocus !== null || e.buttons) {
         this.touchFocus = cell;
       }
@@ -252,7 +261,7 @@ export class GameScene {
       this.handleTap(cell, e.pointerType === 'mouse');
     };
     const cancel = () => { this.touchFocus = null; };
-    const leave = (e: PointerEvent) => { if (e.pointerType === 'mouse') this.hoverFocus = null; };
+    const leave = (e: PointerEvent) => { if (e.pointerType === 'mouse') this.setHover(null); };
     c.addEventListener('pointerdown', down);
     c.addEventListener('pointermove', move);
     c.addEventListener('pointerup', up);
@@ -377,7 +386,9 @@ export class GameScene {
     if (this.role !== 'play' || this.isEnding || this.clock < this.settleUntil) return null;
     if (this.touchFocus) return this.touchFocus;
     if (this.inputMode === 'key') return this.cursor;
-    if (this.inputMode === 'mouse' && this.hoverFocus) return this.hoverFocus;
+    if (this.inputMode === 'mouse' && this.hoverFocus) {
+      return this.clock - this.hoverSince >= HOVER_PREVIEW_DELAY ? this.hoverFocus : null;
+    }
     return this.armed;
   }
 
